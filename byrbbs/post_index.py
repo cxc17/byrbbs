@@ -19,10 +19,10 @@ class post_index(object):
         mh2 = get_mysql()
         seg = ur"[\s+\.\!\/\"\'\-\|\]\[\{\}\\]+|[+——！，。：、~@#￥%……&*（）；－):①②③④⑤⑥⑦⑧⑨⑩⑴⑵⑶⑷⑸⑹⑺─┅┆┈┍┎┒┙├┝┟┣┫┮┰┱┾┿╃╄╆╈╋▉▲▼※Ⅱ←→↖↗↘↙《》┊┋┇┉┠┨┌┐┑└┖┘┚┤┥┦┏┓┗┛┯┷┻┳┃━〓¤`˙⊙│〉〈⒂～？．＂”“’·■／￣�︱〕〔【】』『」「◎○◆●☉　┬┴┸┼═╔╗╚╝╩╭╮╯╰╱╲▁▅▆▇█▊▌▍▎▓▕□▽◇◢◣◤◥★☆︶︻︼︵︿﹃﹎﹏△▔▏▋▄▃▂△▔▏▋▄▃▂╳╬╫╪╨╧╦╥╣╢╠╟╜╙╘╖╓║╅╂┭┕┄〞〝〗〖〒〇〃⿻⿺⿹⿸⿷⿵⿴⿲]+"
 
-        sql = "select id, title, content from post limit 1000"
+        sql = "select id, title, content from post limit 100000"
         mh.query(sql)
 
-        for i in xrange(1000):
+        for i in xrange(100000):
             ret = mh.selectone()
             # 对标题进行词频分析
             content = collections.defaultdict(int)
