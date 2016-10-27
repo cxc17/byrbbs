@@ -1,0 +1,9 @@
+#python
+*.pyc
+spider.conf
+
+#mac
+.DS_Store
+
+#pycharm
+.idea
