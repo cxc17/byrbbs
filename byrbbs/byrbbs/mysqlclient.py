@@ -50,3 +50,11 @@ class get_mysql(object):
             raise err
 
         return result
+
+    def selectmany(self, size):
+        try:
+            result = self.__cursor.fetchmany(size)
+        except Exception, err:
+            raise err
+
+        return result
