@@ -26,7 +26,6 @@ class WriteBoard(object):
                 board_url = sel.xpath(xpath_name)[0]
             except:
                 break
-
             if 'board' in board_url:
                 board_name = re.findall(r'board/(.+)', board_url)[0]
                 mh = get_mysql()

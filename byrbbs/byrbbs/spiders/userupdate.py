@@ -39,6 +39,17 @@ class UserUpdateSpider(Spider):
             return
 
         mh = get_mysql()
+
+        # 从数据库中找出user中存在的user_id
+        sql = "select distinct user_id from user_id where user_id in (select user_id from user_id_exsit)"
+        ret_sql = mh.select(sql)
+
+        for ret in ret_sql:
+            if len(ret[0]) > 12:
+                continue
+            user_id = ret[0]
+            self.deal_user_id(user_id)
+
         # 从数据库中找出user中不存在的user_id并保存
         sql = "select distinct user_id from user_id where user_id not in (select user_id from user_id_exsit)"
         ret_sql = mh.select(sql)
@@ -56,15 +67,6 @@ class UserUpdateSpider(Spider):
                           meta={'cookiejar': response.meta['cookiejar']},
                           headers={'X-Requested-With': 'XMLHttpRequest'},
                           callback=self.user_info)
-        # 从数据库中找出user中存在的user_id
-        sql = "select distinct user_id from user_id where user_id in (select user_id from user_id_exsit)"
-        ret_sql = mh.select(sql)
-
-        for ret in ret_sql:
-            if len(ret[0]) > 12:
-                continue
-            user_id = ret[0]
-            yield self.deal_user_id(user_id)
 
     def user_info(self, response):
         try:

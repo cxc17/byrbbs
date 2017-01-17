@@ -60,11 +60,12 @@ class UserSpider(Spider):
         # ret_sql = mh.select(sql)
 
         # 从数据库中找出user_id
-        sql = "select user_id from user order by insert_time limit 100"
+        sql = "select user_id from user order by insert_time limit 200"
         ret_sql = mh.select(sql)
 
         for ret in ret_sql:
             user_id = ret[0]
+            print user_id
             user_url = 'https://bbs.byr.cn/user/query/%s.json' % user_id
             yield Request(user_url,
                           meta={'cookiejar': response.meta['cookiejar']},
@@ -76,7 +77,6 @@ class UserSpider(Spider):
             user_info = json.loads(response.body.decode('gbk'))
         except:
             return
-
         if user_info['ajax_msg'] != u"操作成功":
             return
         else:

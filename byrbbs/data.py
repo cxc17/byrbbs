@@ -139,7 +139,7 @@ class DealData(object):
         count = 0
         post_date_num = [0]
         post_date = ["2004/05/28"]
-        post_year_num = {u'女生': [0]*13, u'男生': [0]*13, u'全部': [0]*13}
+        post_year_num = {u'女生': [0]*14, u'男生': [0]*14, u'全部': [0]*14}
         post_month_num = {u'女生': [0]*12, u'男生': [0]*12, u'全部': [0]*12}
         post_day_num = {u'女生': [0]*31, u'男生': [0]*31, u'全部': [0]*31}
         post_weekday_num = {u'女生': [0]*7, u'男生': [0]*7, u'全部': [0]*7}
@@ -212,7 +212,7 @@ class DealData(object):
         count = 0
         comment_date_num = [0]
         comment_date = ["2004/05/28"]
-        comment_year_num = {u'女生': [0]*13, u'男生': [0]*13, u'全部': [0]*13}
+        comment_year_num = {u'女生': [0]*14, u'男生': [0]*14, u'全部': [0]*14}
         comment_month_num = {u'女生': [0]*12, u'男生': [0]*12, u'全部': [0]*12}
         comment_day_num = {u'女生': [0]*31, u'男生': [0]*31, u'全部': [0]*31}
         comment_weekday_num = {u'女生': [0]*7, u'男生': [0]*7, u'全部': [0]*7}

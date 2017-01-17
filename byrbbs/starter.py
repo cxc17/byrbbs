@@ -16,6 +16,7 @@ from byrbbs.SpiderConfig import SpiderConfig
 
 if __name__ == '__main__':
     spider_name = sys.argv[1]
+    spider = ""
 
     if spider_name == 'updatespider':
         spider = UpdateSpider()

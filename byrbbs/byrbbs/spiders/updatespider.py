@@ -44,6 +44,17 @@ class UpdateSpider(Spider):
         sql = "delete from user_id"
         mh.execute(sql)
 
+        # 获取post中最大id到数据库中
+        sql = "select id from post order by id desc limit 1"
+        ret = mh.select(sql)
+
+        sql = "update post_last_id set post_id='%s' where id=1" % ret[0][0]
+        mh.execute(sql)
+
+        # 删除post_delete
+        delete_sql = "delete from post_delete"
+        mh.execute(delete_sql)
+
         # 从数据库中找出每个版块的名称
         sql = "select board_name from board"
         ret_sql = mh.select(sql)
@@ -59,7 +70,6 @@ class UpdateSpider(Spider):
     # 爬取每个版块的帖子的页数
     def board_page(self, response):
         # sel = Selector(response)
-
         sql = "SELECT `last_time` FROM post WHERE `board_name`='%s' " \
               "ORDER BY `last_time` DESC LIMIT 1" % response.meta['board_name']
         mh = get_mysql()
@@ -74,7 +84,7 @@ class UpdateSpider(Spider):
 
         # 更新时间范围为一周的帖子，604800秒等于一周, 172800秒等于2天
         now_time = int(time())
-        if cmp_time+172800 < now_time:
+        if cmp_time + 172800 < now_time:
             cmp_time = now_time
 
         # PostNum_xpath = '/html/body/div[4]/div[1]/ul/li[1]/i/text()'
@@ -105,12 +115,14 @@ class UpdateSpider(Spider):
             PostURL_xpath = '/html/body/div[3]/table/tbody/tr[%s]/td[2]/a/@href' % i
             PostTitle_xpath = '/html/body/div[3]/table/tbody/tr[%s]/td[2]/a/text()' % i
             AuthorID_xpath = '/html/body/div[3]/table/tbody/tr[%s]/td[4]/a/text()' % i
+            PostNum_xpath = '/html/body/div[3]/table/tbody/tr[%s]/td[5]/a/text()' % i
             LastTime_xpath = '/html/body/div[3]/table/tbody/tr[%s]/td[6]/a/text()' % i
 
             try:
                 post_title = sel.xpath(PostTitle_xpath).extract()[0]
                 post_url = sel.xpath(PostURL_xpath).extract()[0]
                 author_id = sel.xpath(AuthorID_xpath).extract()[0]
+                post_num = int(sel.xpath(PostNum_xpath).extract()[0])
                 last_time = sel.xpath(LastTime_xpath).extract()[0]
             except:
                 return
@@ -128,10 +140,20 @@ class UpdateSpider(Spider):
             elif cmp_time2 <= response.meta['cmp_time'] and response.meta['page'] > 1:
                 break
 
-            print post_url
             post_url = 'https://bbs.byr.cn' + post_url
 
             mh = get_mysql()
+            # 查找回帖数是否改变
+            search_sql = "select post_num from post where url='%s'" % post_url
+            ret = mh.execute(search_sql)
+            if ret and ret[0][0] == post_num:
+                continue
+
+            print post_url
+            # 插入新的要删除的post
+            insert_sql = "insert into post_delete select id, title, content from post where url='%s'" % post_url
+            mh.execute(insert_sql)
+
             # 删除更新的原贴和评论
             sql = "DELETE FROM comment WHERE `post_id`=(SELECT `post_id` FROM post WHERE `url`='%s')" % post_url
             mh.execute(sql)
