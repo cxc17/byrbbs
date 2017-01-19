@@ -113,6 +113,8 @@ class post_index(object):
         print "**************delete post_index*****************"
         sql = "select id, title, content from post_delete"
         rets = mh.select(sql)
+        if not rets:
+            return
         i = 0
         print len(rets)
         for ret in rets:
@@ -120,12 +122,12 @@ class post_index(object):
             total_content = []
             # 对标题进行词频分析
             title_tmp = re.sub(seg, " ".decode("utf8"), ret[1])
-            title_tmp = list(jieba.cut(title_tmp))
+            title_tmp = list(set(jieba.cut(title_tmp)))
             for word in title_tmp:
                 total_content.append(word)
             # 对内容进行词频分析
             content_tmp = re.sub(seg, " ".decode("utf8"), ret[2])
-            content_tmp = list(jieba.cut(content_tmp))
+            content_tmp = list(set(jieba.cut(content_tmp)))
             for word in content_tmp:
                 total_content.append(word)
             print i, len(total_content)
@@ -213,29 +215,27 @@ class post_index(object):
         for now in xrange(1000):
             sql = "SELECT post_index.id,post_index.word,post_index.doc_fre,post_index.list,post_index_update.doc_fre," \
                   "post_index_update.list from post_index join post_index_update on " \
-                  "post_index.word = post_index_update.word limit %s, %s" % (1000*now, 1000)
+                  "post_index.word = post_index_update.word limit %s, %s" % (100*now, 100)
             rets = mh.select(sql)
             if not rets:
                 break
-            print "**************update_index*****************"
+            print "**************update_index %s*****************" % now
+            insert_index = []
+            for ret in rets:
+                insert_index.append(str(ret[0]))
+            insert_index = "(" + ",".join(insert_index) + ")"
+            sql = "delete from post_index where id in %s" % insert_index
+            mh.execute(sql)
             insert_index = []
             for ret in rets:
                 insert_index.append("(%s, '%s', %s, '%s')" % (ret[0], ret[1], int(ret[2])+int(ret[4]),
                                                               ret[3].strip("}")+',' + ret[5].strip("{")))
 
-            sql = "delete from post_index where id in (select id from (select post_index.id from post_index join " \
-                  "post_index_update on post_index.word = post_index_update.word) as newtable)"
-            mh.execute(sql)
-
-            x = 10
-            num = len(insert_index) / x
-            for i in xrange(x+1):
-                print "**************insert index %s*****************" % i
-                insert_index_now = ",".join(insert_index[i*num:(i+1)*num])
-                if not insert_index_now:
-                    break
-                insert_index_now = "insert into post_index(id, word, doc_fre, list) values " + insert_index_now
-                mh.execute(insert_index_now)
+            print "**************insert index *****************"
+            if not insert_index:
+                continue
+            insert_index = "insert into post_index(id, word, doc_fre, list) values " + ",".join(insert_index)
+            mh.execute(insert_index)
 
         print "**************insert_into*****************"
         insert_sql = "INSERT into post_index(word, doc_fre, list) SELECT word, doc_fre, list from post_index_update " \
@@ -247,7 +247,7 @@ class post_index(object):
     def merge_data(k):
         mh = get_mysql()
         sql = "select post_index.id,post_index.word,post_index.doc_fre,post_index.list,post_index%s.doc_fre," \
-              "post_index%s.list from post_index join post_index%s on post_index.word = post_index%s.word" % (k, k, k, k)
+              "post_index%s.list from post_index join post_index%s on post_index.word=post_index%s.word" % (k, k, k, k)
         rets = mh.select(sql)
 
         print "**************update_index*****************"
@@ -292,13 +292,13 @@ class post_index(object):
     # post_index更新
     @staticmethod
     def index_update():
-        post_index().update_index_delete()
-        # post_index().post_index_update()
-        # post_index().update_merge_data()
+        # post_index().update_index_delete()
+        post_index().post_index_update()
+        post_index().update_merge_data()
 
 
 if __name__ == '__main__':
     time1 = time.time()
-    post_index().all_merge_data()
+    post_index().index_update()
     print time.time()-time1
 
