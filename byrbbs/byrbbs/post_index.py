@@ -215,7 +215,7 @@ class post_index(object):
         for now in xrange(1000):
             sql = "SELECT post_index.id,post_index.word,post_index.doc_fre,post_index.list,post_index_update.doc_fre," \
                   "post_index_update.list from post_index join post_index_update on " \
-                  "post_index.word = post_index_update.word limit %s, %s" % (100*now, 100)
+                  "post_index.word = post_index_update.word limit 10"  # % (100*now, 100)
             rets = mh.select(sql)
             if not rets:
                 break
@@ -226,6 +226,14 @@ class post_index(object):
             insert_index = "(" + ",".join(insert_index) + ")"
             sql = "delete from post_index where id in %s" % insert_index
             mh.execute(sql)
+
+            insert_index = []
+            for ret in rets:
+                insert_index.append("'%s'" % ret[1])
+            insert_index = "(" + ",".join(insert_index) + ")"
+            sql = "delete from post_index_update where word in %s" % insert_index
+            mh.execute(sql)
+
             insert_index = []
             for ret in rets:
                 insert_index.append("(%s, '%s', %s, '%s')" % (ret[0], ret[1], int(ret[2])+int(ret[4]),
