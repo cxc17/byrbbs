@@ -52,8 +52,8 @@ class UpdateSpider(Spider):
         mh.execute(sql)
 
         # 删除post_delete
-        delete_sql = "delete from post_delete"
-        mh.execute(delete_sql)
+        # delete_sql = "delete from post_delete"
+        # mh.execute(delete_sql)
 
         # 从数据库中找出每个版块的名称
         sql = "select board_name from board"
@@ -96,7 +96,7 @@ class UpdateSpider(Spider):
         #     post_page = post_num / 30 + 2
 
         # 增量更新需要爬取的页数
-        for num in xrange(1, 3):  # post_page):
+        for num in xrange(1, 2):  # post_page):
             page_url = 'https://bbs.byr.cn/board/%s?p=%s' % (response.meta['board_name'], num)
 
             yield Request(page_url,
@@ -327,6 +327,28 @@ class UpdateSpider(Spider):
             mh = get_mysql()
             mh.execute(sql)
             yield item_comment
+
+        # 帖子发布时间
+        try:
+            try:
+                PostTime_xpath = '/html/body/div[3]/div[1]/table/tr[2]/td[2]/div//text()[3]'
+                post_time = sel.xpath(PostTime_xpath).extract()[0]
+                post_time = re.findall(r'\(([\xa0\w :]+?:[\xa0\w :]+?)\)', post_time)[0]
+            except:
+                try:
+                    PostTime_xpath = '/html/body/div[3]/div[1]/table/tr[2]/td[2]/div//text()[4]'
+                    post_time = sel.xpath(PostTime_xpath).extract()[0]
+                    post_time = re.findall(r'\(([\xa0\w :]+?:[\xa0\w :]+?)\)', post_time)[0]
+                except:
+                    PostTime_xpath = '/html/body/div[3]/div[1]/table/tr[2]/td[2]/div//text()[5]'
+                    post_time = sel.xpath(PostTime_xpath).extract()[0]
+                    post_time = re.findall(r'\(([\xa0\w :]+?:[\xa0\w :]+?)\)', post_time)[0]
+
+            post_time = post_time.replace(u'\xa0\xa0', ' ')
+            post_time = localtime(mktime(strptime(post_time, "%a %b %d %H:%M:%S %Y")))
+            item['post_time'] = strftime('%Y-%m-%d %H:%M:%S', post_time)
+        except:
+            item['post_time'] = response.meta['last_time']
 
         # 判断一共有多少页评论
         post_num = int(item['post_num']) + 1

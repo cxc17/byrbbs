@@ -65,7 +65,6 @@ class UserSpider(Spider):
 
         for ret in ret_sql:
             user_id = ret[0]
-            print user_id
             user_url = 'https://bbs.byr.cn/user/query/%s.json' % user_id
             yield Request(user_url,
                           meta={'cookiejar': response.meta['cookiejar']},
