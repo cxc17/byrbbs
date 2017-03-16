@@ -30,7 +30,7 @@ class WriteBoard(object):
                 board_name = re.findall(r'board/(.+)', board_url)[0]
                 mh = get_mysql()
                 mh.execute(sql % board_name)
-                print board_num, board_url
+                print board_num, board_url, board_name
             else:
                 section_url = 'https://bbs.byr.cn' + board_url
                 print board_num

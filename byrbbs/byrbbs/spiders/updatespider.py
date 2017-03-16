@@ -83,9 +83,9 @@ class UpdateSpider(Spider):
             cmp_time = int(mktime(time_tmp))
 
         # 更新时间范围为一周的帖子，604800秒等于一周, 172800秒等于2天
-        now_time = int(time())
-        if cmp_time + 172800 < now_time:
-            cmp_time = now_time
+        # now_time = int(time())
+        # if cmp_time + 172800 < now_time:
+        #     cmp_time = now_time
 
         # PostNum_xpath = '/html/body/div[4]/div[1]/ul/li[1]/i/text()'
         # post_num = int(sel.xpath(PostNum_xpath).extract()[0])
@@ -129,7 +129,7 @@ class UpdateSpider(Spider):
 
             try:
                 time_tmp = strptime(last_time, "%Y-%m-%d")
-                cmp_time2 = int(mktime(time_tmp)) + 86400
+                cmp_time2 = int(mktime(time_tmp)) + 3600
             except:
                 last_time = strftime('%Y-%m-%d', localtime(time())) + ' ' + last_time.strip().encode('utf-8')
                 time_tmp = strptime(last_time, "%Y-%m-%d %H:%M:%S")
