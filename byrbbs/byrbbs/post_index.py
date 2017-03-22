@@ -76,7 +76,7 @@ class post_index(object):
             title_tmp = list(jieba.cut(title_tmp))
             for word in title_tmp:
                 # 标题词频：出现1次记为10次
-                content[word] += 10
+                content[word] += 30
             # 对内容进行词频分析
             content_tmp = re.sub(seg, " ".decode("utf8"), ret[2])
             content_tmp = list(jieba.cut(content_tmp))
@@ -182,7 +182,7 @@ class post_index(object):
             title_tmp = list(jieba.cut(title_tmp))
             for word in title_tmp:
                 # 标题词频：出现1次记为10次
-                content[word] += 10
+                content[word] += 30
             # 对内容进行词频分析
             content_tmp = re.sub(seg, " ".decode("utf8"), ret[2])
             content_tmp = list(jieba.cut(content_tmp))
@@ -212,7 +212,7 @@ class post_index(object):
     @staticmethod
     def update_merge_data():
         mh = get_mysql()
-        for now in xrange(1000):
+        for now in xrange(100000):
             sql = "SELECT post_index.id,post_index.word,post_index.doc_fre,post_index.list,post_index_update.doc_fre," \
                   "post_index_update.list from post_index join post_index_update on " \
                   "post_index.word = post_index_update.word limit 5"  # % (100*now, 100)
