@@ -8,6 +8,9 @@ import jieba
 import re
 import time
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class post_index(object):
     def __init__(self):
