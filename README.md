@@ -1,6 +1,6 @@
 # byrbbs
 
-北邮人论坛搜索网站爬虫系统 【www.oneseven.cc】
+北邮人论坛搜索网站爬虫系统 【 www.oneseven.cc 】
 
 主要功能：
 
