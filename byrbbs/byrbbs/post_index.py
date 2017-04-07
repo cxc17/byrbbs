@@ -78,7 +78,7 @@ class post_index(object):
             title_tmp = re.sub(seg, " ".decode("utf8"), ret[1])
             title_tmp = list(jieba.cut(title_tmp))
             for word in title_tmp:
-                # 标题词频：出现1次记为10次
+                # 标题词频：出现1次记为30次
                 content[word] += 30
             # 对内容进行词频分析
             content_tmp = re.sub(seg, " ".decode("utf8"), ret[2])
@@ -184,7 +184,7 @@ class post_index(object):
             title_tmp = re.sub(seg, " ".decode("utf8"), ret[1])
             title_tmp = list(jieba.cut(title_tmp))
             for word in title_tmp:
-                # 标题词频：出现1次记为10次
+                # 标题词频：出现1次记为30次
                 content[word] += 30
             # 对内容进行词频分析
             content_tmp = re.sub(seg, " ".decode("utf8"), ret[2])
