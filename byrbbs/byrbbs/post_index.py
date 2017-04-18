@@ -26,7 +26,8 @@ class post_index(object):
     #         sql = "select id, doc_fre from post_index where word='%s'" % ret[0]
     #         ret_words = mh.select(sql)
     #         for ret_word in ret_words:
-    #             update_sql = "update post_index set doc_fre=%s where id='%s'" % (int(ret_word[1])*int(ret[1]), ret_word[0])
+    #             update_sql = "update post_index set doc_fre=%s where id='%s'" % (int(ret_word[1])*int(ret[1])
+    # , ret_word[0])
     #             mh.execute(update_sql)
 
     # 停用词相关操作
