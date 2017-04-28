@@ -75,13 +75,11 @@ class UpdateSpider(Spider):
         mh = get_mysql()
         ret_sql = mh.select(sql)
 
-        if not ret_sql:
-            cmp_time = 0
-        else:
+        cmp_time = 0
+        if ret_sql:
             last_time = str(ret_sql[0][0])
             time_tmp = strptime(last_time, "%Y-%m-%d %H:%M:%S")
             cmp_time = int(mktime(time_tmp))
-
         # 更新时间范围为一周的帖子，604800秒等于一周, 172800秒等于2天
         # now_time = int(time())
         # if cmp_time + 172800 < now_time:
